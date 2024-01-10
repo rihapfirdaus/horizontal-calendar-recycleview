@@ -1,7 +1,7 @@
 package coba.gaes.horizontalcalendar
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
     private lateinit var spinner: Spinner
@@ -69,7 +70,6 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
                 val monthOffset = position - getCurrentMonthIndex()
                 listDate.clear()
                 listDate = getCalendar(monthOffset)
-                Log.d("bulaann", "${listDate.size}")
                 adapter = CalendarAdapter(listDate, this@MainActivity)
                 setupRecyclerView(adapter)
             }
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
     }
 
     private fun getCurrentMonthIndex(): Int {
-        val currentMonth = SimpleDateFormat("MM").format(Calendar.getInstance().time)
+        val currentMonth = SimpleDateFormat("MM", Locale.getDefault()).format(Calendar.getInstance().time)
         return currentMonth.toInt() - 1
     }
 
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
     }
 
     private fun updateUi(data: Date) {
-        val selectedDate = SimpleDateFormat("EEE, dd MMM YYYY").format(data)
+        val selectedDate = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(data)
 
         calendarTooltip = findViewById(R.id.calendar_tooltip)
         calendarTooltip.text = selectedDate
@@ -125,13 +125,14 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
         return dateList
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onDateClick(position: Int) {
         for (i in listDate.indices) {
             listDate[i].isSelected = (i == position)
         }
 
-        Toast.makeText(this, "${listDate.get(position).data}", Toast.LENGTH_SHORT).show()
-        updateUi(listDate.get(position).data)
+        Toast.makeText(this, "${listDate[position].data}", Toast.LENGTH_SHORT).show()
+        updateUi(listDate[position].data)
         adapter.notifyDataSetChanged()
     }
 }

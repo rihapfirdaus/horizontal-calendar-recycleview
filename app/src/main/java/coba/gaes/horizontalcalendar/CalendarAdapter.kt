@@ -21,13 +21,13 @@ class CalendarAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CalendarAdapter.CalendarViewHolder {
+    ): CalendarViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent.context)
         val view: View = inflater.inflate(R.layout.layout_date, parent, false)
         return CalendarViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CalendarAdapter.CalendarViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val date = listDate[position]
 
         holder.calendarDate.text = date.calendarDate
@@ -43,21 +43,21 @@ class CalendarAdapter(
                     holder.itemView.context,
                     R.color.black
                 )
-            );
+            )
         } else if (date.isSelected) {
             holder.layoutDate.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     holder.itemView.context,
                     R.color.dark_gray
                 )
-            );
+            )
         } else {
             holder.layoutDate.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     holder.itemView.context,
                     R.color.gray
                 )
-            );
+            )
         }
     }
 
