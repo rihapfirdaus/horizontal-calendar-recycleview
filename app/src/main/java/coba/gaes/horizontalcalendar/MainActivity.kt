@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -41,23 +42,12 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
         setupRecyclerView(adapter)
 
         spinner = findViewById(R.id.calendar_month)
-        val list: Array<String> = arrayOf(
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-        )
 
-        val customAdapter = SpinnerAdapter(this, android.R.layout.simple_spinner_item, list)
+        val listMonth: Array<String> = DateFormatSymbols().months
+
+        val customAdapter = SpinnerAdapter(this, android.R.layout.simple_spinner_item, listMonth)
         customAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         spinner.adapter = customAdapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -82,7 +72,7 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
     }
 
     private fun getCurrentMonthIndex(): Int {
-        val currentMonth = SimpleDateFormat("MM", Locale.getDefault()).format(Calendar.getInstance().time)
+        val currentMonth = SimpleDateFormat("MM", Locale.ENGLISH).format(Calendar.getInstance().time)
         return currentMonth.toInt() - 1
     }
 
@@ -95,11 +85,11 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
         }
     }
 
-    private fun updateUi(data: Date) {
-        val selectedDate = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(data)
+    private fun updateUi(data: Date, isCurrentDate: Boolean) {
+        val selectedDate = SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH).format(data)
 
         calendarTooltip = findViewById(R.id.calendar_tooltip)
-        calendarTooltip.text = selectedDate
+        calendarTooltip.text = if (isCurrentDate) "Today" else selectedDate
     }
 
     private fun getCalendar(monthOffset: Int = 0): MutableList<CalendarDateModel> {
@@ -132,7 +122,7 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnDateClickListener {
         }
 
         Toast.makeText(this, "${listDate[position].data}", Toast.LENGTH_SHORT).show()
-        updateUi(listDate[position].data)
+        updateUi(listDate[position].data, listDate[position].isCurrentDay)
         adapter.notifyDataSetChanged()
     }
 }
